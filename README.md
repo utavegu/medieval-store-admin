@@ -1,3 +1,10 @@
+Пока черновик
+Используемая нода - 18.16.0
+npm - 9.7.1
+Реакт - 18.2.0 (cra with typescript)
+Тайпскрипт - 4.9.5
+Используются tsc, eslint, stylelint, prettier и husky. При несоблюдении правил кодгайда коммит не пройдёт.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
