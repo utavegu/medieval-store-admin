@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+// TODO: Помни, что стрикт мод добавляет перерисовку
 root.render(
   <React.StrictMode>
     <App />
