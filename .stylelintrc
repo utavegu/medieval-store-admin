@@ -7,5 +7,7 @@
     "stylelint-config-recess-order"
   ],
   "ignoreFiles": ["node_modules"],
-  "rules": {}
+  "rules": {
+    "selector-class-pattern": null
+  }
 }
