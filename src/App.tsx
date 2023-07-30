@@ -4,7 +4,8 @@ import React from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import ru from 'date-fns/locale/ru';
-import DateChooser from './components/DateChooser';
+// import DateChooser from './components/DateChooser';
+import FileChooser from './components/FileChooser';
 
 function App() {
   return (
@@ -12,7 +13,8 @@ function App() {
       dateAdapter={AdapterDateFns}
       adapterLocale={ru}
     >
-      <DateChooser />
+      {/* <DateChooser /> */}
+      <FileChooser />
     </LocalizationProvider>
 
     // <div className="app">

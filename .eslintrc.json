@@ -51,6 +51,8 @@
           "src/setupTests.ts"
         ]
       }
-    ]
+    ],
+    "@typescript-eslint/no-unused-vars": ["warn"],
+    "react/react-in-jsx-scope": "off"
   }
 }
