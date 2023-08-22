@@ -6,6 +6,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import ru from 'date-fns/locale/ru';
 // import DateChooser from './components/DateChooser';
 import FileChooser from './components/FileChooser';
+import UsersList from './components/UsersList';
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
       adapterLocale={ru}
     >
       {/* <DateChooser /> */}
-      <FileChooser />
+      {/* <FileChooser /> */}
+      <UsersList />
     </LocalizationProvider>
 
     // <div className="app">
