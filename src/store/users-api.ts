@@ -1,25 +1,36 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-// НЕ ТУТ
+// TODO: НЕ ТУТ. И сам интерфейс пока фэйковый, бери с бэка
 interface IUser {
   id: number;
-  name: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
 }
+
+// TODO: научить Реакт кушать енвы из композа
+const temporaryBaseApiUrl = 'http://localhost:4000/api';
+// console.log(process.env);
+// Проверять ноденв и менять ЕНВ, в зависимости от этого (контур)
+const baseApiUrl = process.env.NODE_ENV === 'development' ? process.env.BASE_API_URL_DEV : 'чото другое';
 
 export const usersAPI = createApi({
   reducerPath: 'usersAPI',
   tagTypes: ['Users'],
-  // бэйс юрл юрать из енв, а специфичный для апи путь, в целом, можно просто вынести в константу выше, прямо тут.
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://jsonplaceholder.typicode.com/users' }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${temporaryBaseApiUrl}/users` }),
   endpoints: (build) => ({
     // запросить с сервера всех пользователей (возможна фильтрация по параметрам)
-    getUsers: build.query<IUser[], string>({
-      query: (limit = '10') => ({
+    getUsers: build.query<any, { limit: number; offset: number }>({
+      // getUsers: build.query<IUser[], string>({
+      query: ({ limit = 10, offset = 0 }) => ({
         url: '',
         params: {
-          _limit: limit,
+          limit: limit,
+          offset: offset,
         },
       }),
+      // Ну в общем-то эта порнография лишнее, всё корректно рабтает. Только на неиспользуемый резалт ругается, но, в данном случае можно и согрешить, заигнорив этот ворнинг
       // `?${limit && `_limit=${limit}`}`,
       // providesTags: (result, error, arg) =>
       // result

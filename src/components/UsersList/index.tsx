@@ -1,38 +1,42 @@
-import { useEffect, useState } from 'react';
-import { useAppSelector, useAppDispatch } from '../../hooks/redux';
-import { createUser, removeUser, fetchUsers } from '../../store/slices/usersSlice';
+import { FormEvent, useState } from 'react';
 import { useAddUserMutation, useDeleteUserMutation, useGetUsersQuery } from '../../store/users-api';
 
+// TODO: Тут же тренируешься и в выставлении квери-параметров в строку.
+
 const UsersList = () => {
-  /*
-  const { users, status, error } = useAppSelector((state) => state.usersReducer);
-  const dispatch = useAppDispatch();
+  // TODO: Вообще, по-хорошему, сделать стейт одним объектом и изменять через деструктуризацию
+  // И добавить ещё 3 фильтра для поиска - имя, почта и что-то там ещё.
+  const [limit, setLimit] = useState(10); // или всё-таки строка?
+  const [offset, setOffset] = useState(0);
 
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
+  // TODO: Тоже знатная порнография... объект
+  const [newUserEmail, setNewUserEmail] = useState('');
+  const [newUserPassword, setNewUserPassword] = useState('');
+  const [newUserFirstName, setNewUserFirstName] = useState('');
+  const [newUserLastName, setNewUserLastName] = useState('');
 
-  const createNewUser = () => {
-    dispatch(createUser({ name: 'Василий Пупкин' }));
-  };
+  // TODO: и для ошибки используй не isError, а error - чтобы отображать детали ошибки на экран
 
-  const removeTargetUser = (id: string) => {
-    dispatch(removeUser(id));
-  };
-  */
-
-  const [count, setCount] = useState('');
-  const [newUser, setNewUser] = useState('');
-  const { data: users = [], isLoading: fetchUsersLoading, isError: fetchUsersError } = useGetUsersQuery(count);
+  const {
+    data: users = [],
+    isLoading: fetchUsersLoading,
+    isError: fetchUsersError,
+  } = useGetUsersQuery({ limit, offset });
   const [addUser, { isLoading: createUserLoading, isError: createUserError, isSuccess: createUserSuccess }] =
     useAddUserMutation();
   const [deleteUser] = useDeleteUserMutation();
 
-  const handleAddUser = async () => {
-    if (newUser) {
-      await addUser({ name: newUser }).unwrap();
-      setNewUser('');
-    }
+  const handleAddUser = async (event: FormEvent) => {
+    event.preventDefault();
+    // if (newUser) { Проверка нужна, но выглядеть будет иначе... а может и оставить это на откуп валидатора
+    await addUser({
+      email: newUserEmail,
+      password: newUserPassword,
+      firstName: newUserFirstName,
+      lastName: newUserLastName,
+    }).unwrap();
+    // setNewUser(''); когда объект - всем полям инишиал стейт (и это будет отдельный объект)
+    // }
   };
 
   const handleDeleteUser = async (id: number) => {
@@ -43,61 +47,86 @@ const UsersList = () => {
     <>
       <h2>Пользователи</h2>
       <div>Добавить пользователя:</div>
-      {/* Что-то тут с таргетами перемудрёжка */}
-      <input
-        type="text"
-        value={newUser}
-        onChange={(event) => setNewUser(event.target.value)}
-      ></input>
-      <button onClick={handleAddUser}>Добавить пользователя</button>
+      {/* TODO: Валидацию и правильную верстку пока целенаправленно опускаю, в публичной части уже поработал над этим. Но, по-хорошему, и тут тоже это реализовать */}
+      <form onSubmit={handleAddUser}>
+        <input
+          placeholder="Почта"
+          type="email"
+          name="email"
+          value={newUserEmail}
+          onChange={(event) => setNewUserEmail(event.target.value)}
+        ></input>
+        <input
+          placeholder="Пароль"
+          type="password"
+          name="password"
+          value={newUserPassword}
+          onChange={(event) => setNewUserPassword(event.target.value)}
+        ></input>
+        <input
+          placeholder="Имя"
+          type="text"
+          name="firstName"
+          value={newUserFirstName}
+          onChange={(event) => setNewUserFirstName(event.target.value)}
+        ></input>
+        <input
+          placeholder="Фамилия"
+          type="text"
+          name="lastName"
+          value={newUserLastName}
+          onChange={(event) => setNewUserLastName(event.target.value)}
+        ></input>
+        <button type="submit">Зарегистрировать пользователя</button>
+      </form>
+
       {createUserLoading && <span>Пользователь добавляется...</span>}
       {createUserError && <span>Ошибка добавления пользователя!</span>}
       {/* Может там ещё есть что-нибудь, что и суцесс через 3 секунды само уберет по таймауту? */}
       {createUserSuccess && <span>Пользователь успешно добавлен!</span>}
       <hr />
-      <div>Сколько пользователей показать?</div>
+
+      <div>Limit (показывать не более)</div>
       <select
-        value={count}
-        onChange={(event) => setCount(event.target.value)}
+        value={limit}
+        onChange={(event) => setLimit(Number(event.target.value))}
       >
-        <option value="">Всех</option>
+        <option value="10">10</option>
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
       </select>
+
+      <div>Offset (сдвиг по списку)</div>
+      <select
+        value={offset}
+        onChange={(event) => setOffset(Number(event.target.value))}
+      >
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select>
+
+      <div>Всего пользователей в базе: {users?.totalUsersCount}</div>
+
+      {/* TODO: а сюда сложносоставной поиск из админки, который ищет сразу по трём полям - имя, почта... что-то ещё */}
+
       <ul>
-        {/* TODO: А вот тут самое время с кэшем подумать, чтобы пользователи повторно не грузились, если уже были загружены. Персист? */}
-        {/* TODO: Интерфейс юзера пока что в юзер слайсе. Да и тот под джейсон плэйсхолдер заточен */}
         {/* Вообще по отображению лоадера мне видится так - во время любого запроса юзеров по сети (добавление, фетч, удаление, редактирование...) весить на список юзеров "невидимое стекло", через которое блочится интерфейс управления юзерами, а сами записи становятся серыми, а посредине его крутится лоадер */}
-        {/* {error && <span>Ошибка загрузки пользователей: {error}</span>}
-        {status === 'loading' && <div>Идёт загрузка пользователей!(спиннер из МУИ)</div>}
-        {!!users.length &&
-          users?.map((user: any, i: number) => (
-            <li key={i}>
-              {user.name} ({user.id})
-              <button
-                style={{ cursor: 'pointer', color: 'red' }}
-                onClick={() => removeTargetUser(user.id)}
-              >
-                &times;
-              </button>
-            </li>
-          ))
-        } */}
 
         {fetchUsersLoading && <div>Загрузка данных с сервера...</div>}
         {fetchUsersError && <div>Ошибка загрузки данных с сервера! </div>}
-        {users.map((user: any) => (
+        {users?.findedUsers?.map((user: any) => (
           <li
-            key={user.id}
-            onClick={() => handleDeleteUser(user.id)}
+            key={user._id}
+            onClick={() => handleDeleteUser(user._id)}
             role="presentation"
           >
-            Имя пользователя: {user.name}
+            {user.email} {user.lastName} {user.firstName}
           </li>
         ))}
       </ul>
-      {/* <button onClick={createNewUser}>Добавить Василия!</button> */}
     </>
   );
 };
