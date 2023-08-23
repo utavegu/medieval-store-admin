@@ -19,6 +19,9 @@ admin:
       - mongo
       - server
 
+"Firefox не может установить соединение с сервером ws://localhost:3000/ws."
+Это откуда? Я с вебсокетами пока не баловался. Надо разобраться
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
