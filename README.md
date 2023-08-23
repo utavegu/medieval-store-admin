@@ -5,6 +5,20 @@ npm - 9.7.1
 Тайпскрипт - 4.9.5
 Используются tsc, eslint, stylelint, prettier и husky. При несоблюдении правил кодгайда коммит не пройдёт.
 
+Часть композа, отвечающая за микросервис админки:
+admin:
+    container_name: admin-container
+    image: node:hydrogen-alpine3.16
+    working_dir: /medieval-store-admin-app
+    volumes:
+      - ./medieval-store-admin:/medieval-store-admin-app
+    ports:
+      - $ADMIN_EXTERNAL_PORT:$ADMIN_INTERNAL_PORT
+    command: [ "npm", "run", "start" ]
+    depends_on:
+      - mongo
+      - server
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
