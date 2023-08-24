@@ -9,6 +9,14 @@ interface IUser {
   lastName: string;
 }
 
+interface IQueryParameters {
+  limit?: string;
+  offset?: string;
+  email?: string;
+  firstName?: string;
+  contactPhone?: string;
+}
+
 // TODO: научить Реакт кушать енвы из композа
 const temporaryBaseApiUrl = 'http://localhost:4000/api';
 // console.log(process.env);
@@ -21,7 +29,7 @@ export const usersAPI = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: `${temporaryBaseApiUrl}/users` }),
   endpoints: (build) => ({
     // запросить с сервера всех пользователей (возможна фильтрация по параметрам)
-    getUsers: build.query<any, { limit: number; offset: number }>({
+    getUsers: build.query<any, IQueryParameters>({
       // getUsers: build.query<IUser[], string>({
       query: ({ limit = 10, offset = 0 }) => ({
         url: '',
