@@ -7,3 +7,42 @@
   font-size: 40px;
   border: 5px dashed #000;
 }
+
+.previewsContainer {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+  justify-content: left;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.imageContainer {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
+  border: 3px solid #000;
+}
+
+.imageContainer img {
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+}
+
+.removeImageButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  width: 15px;
+  height: 15px;
+
+  /* background: url(/img/icons/close-cross.svg) transparent; */
+  cursor: pointer;
+  border: none;
+}
