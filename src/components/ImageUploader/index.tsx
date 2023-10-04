@@ -1,12 +1,18 @@
 import { FC, useState } from 'react';
+import { declOfNum } from '../../utils/declOfNum';
 import FileDropArea from './FileDropArea';
 import ChooseFileInput from './ChooseFileInput';
 import styles from './ImageUploader.module.css';
 
-const imageUploaderConfig: { maxFileSizeInBytes: number; acceptFileTypes: string[] } = {
+const imageUploaderConfig: {
+  maxFileSizeInBytes: number;
+  acceptFileTypes: string[];
+  maxPhotosQuantity: number;
+} = {
   // TODO: Синхронизируй с бэком - там понизь до 2х мб, а тут типы расширь до 5 вариантов
   maxFileSizeInBytes: 2000000,
   acceptFileTypes: ['image/jpeg', 'image/png'],
+  maxPhotosQuantity: 5,
 };
 
 type PropTypes = {
@@ -15,39 +21,49 @@ type PropTypes = {
 };
 
 const ImageUploader: FC<PropTypes> = ({ view, isShowPreviews }) => {
-  const [uploadedFiles, setUploadedFiles] = useState<File[] | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   const deleteImageHandler = (fileName: string) => {
-    const editedUploadedFiles = uploadedFiles?.filter((file) => file.name !== fileName);
+    const editedUploadedFiles = uploadedFiles.filter((file) => file.name !== fileName);
     // TODO: А если режим редактирования, то ещё и на бэк делать запрос на удаление
     if (editedUploadedFiles) {
       setUploadedFiles(editedUploadedFiles);
     } else {
-      setUploadedFiles(null);
+      setUploadedFiles([]);
     }
   };
 
+  const freeSlotsLeft = imageUploaderConfig.maxPhotosQuantity - uploadedFiles.length;
+  const freeSlotsMessage = freeSlotsLeft
+    ? `Можно загрузить ещё ${freeSlotsLeft} ${declOfNum(freeSlotsLeft, ['фотографию', 'фотографии', 'фотографий'])}`
+    : 'Вы загрузили максимальное количество фотографий';
+
   return (
     <div>
-      {(view === 'area' || view === 'both') && (
-        <FileDropArea
-          addUploadedFiles={setUploadedFiles}
-          imageUploaderConfig={imageUploaderConfig}
-        />
+      {!(freeSlotsLeft <= 0) && (
+        <div>
+          {(view === 'area' || view === 'both') && (
+            <FileDropArea
+              uploadedFiles={uploadedFiles}
+              addUploadedFiles={setUploadedFiles}
+              imageUploaderConfig={imageUploaderConfig}
+            />
+          )}
+          {(view === 'input' || view === 'both') && (
+            <ChooseFileInput
+              uploadedFiles={uploadedFiles}
+              addUploadedFiles={setUploadedFiles}
+              imageUploaderConfig={imageUploaderConfig}
+            />
+          )}
+        </div>
       )}
-      {(view === 'input' || view === 'both') && (
-        <ChooseFileInput
-          addUploadedFiles={setUploadedFiles}
-          imageUploaderConfig={imageUploaderConfig}
-        />
-      )}
-      {/*
-        TODOs:
-        - при загрузке новых - не затирать, а добавлять (?) - слишком муторный функционал, может и не буду... однако тп могут буксануть, которые только по 1 файлу умеют за раз добавлять... так что возможно стоит проверять количество в uploadedFiles и исходя из этого менять лимит в валидаторе
-      */}
       <div>
-        {!!uploadedFiles?.length && (
+        {!!uploadedFiles.length && (
           <>
+            <b>Загружено файлов: {uploadedFiles.length}</b>
+            <br />
+            <b>{freeSlotsMessage}</b>
             {isShowPreviews ? (
               <ul className={styles.previewsContainer}>
                 {uploadedFiles.map((file, i) => (
@@ -80,7 +96,6 @@ const ImageUploader: FC<PropTypes> = ({ view, isShowPreviews }) => {
                 ))}
               </ul>
             )}
-            <b>Загружено файлов: {uploadedFiles?.length}</b>
           </>
         )}
       </div>
