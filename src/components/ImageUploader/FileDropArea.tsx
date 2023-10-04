@@ -2,7 +2,7 @@ import { useState, SyntheticEvent } from 'react';
 import { validateUploadFiles } from '../../utils/validateUploadFiles';
 import styles from './ImageUploader.module.css';
 
-const FileDropArea = ({ addUploadedFiles, imageUploaderConfig }: any) => {
+const FileDropArea = ({ uploadedFiles, addUploadedFiles, imageUploaderConfig }: any) => {
   const [isDrag, setIsDrag] = useState<boolean>(false); // TODO: Вроде так юзСтейт типизировать?
 
   const dragStartHandler = (event: SyntheticEvent) => {
@@ -18,11 +18,7 @@ const FileDropArea = ({ addUploadedFiles, imageUploaderConfig }: any) => {
   const dropHandler = (event: any) => {
     event.preventDefault();
     const files: File[] = [...event.dataTransfer.files];
-    const images = validateUploadFiles(
-      files,
-      imageUploaderConfig.maxFileSizeInBytes,
-      imageUploaderConfig.acceptFileTypes
-    );
+    const images = validateUploadFiles(files, imageUploaderConfig, uploadedFiles);
     if (images?.length) {
       addUploadedFiles(images);
     }

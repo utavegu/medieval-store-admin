@@ -15,7 +15,10 @@ function App() {
       adapterLocale={ru}
     >
       {/* <DateChooser /> */}
-      <ImageUploader view="both" />
+      <ImageUploader
+        view="both"
+        isShowPreviews={true}
+      />
       {/* <UsersList /> */}
     </LocalizationProvider>
 

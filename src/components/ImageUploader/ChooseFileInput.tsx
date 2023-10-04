@@ -1,14 +1,10 @@
 import { ChangeEvent } from 'react';
 import { validateUploadFiles } from '../../utils/validateUploadFiles';
 
-const ChooseFileInput = ({ addUploadedFiles, imageUploaderConfig }: any) => {
+const ChooseFileInput = ({ uploadedFiles, addUploadedFiles, imageUploaderConfig }: any) => {
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const fileList: FileList | null = e.target.files;
-    const images = validateUploadFiles(
-      Array.prototype.slice.call(fileList),
-      imageUploaderConfig.maxFileSizeInBytes,
-      imageUploaderConfig.acceptFileTypes
-    );
+    const images = validateUploadFiles(Array.prototype.slice.call(fileList), imageUploaderConfig, uploadedFiles);
     if (images?.length) {
       addUploadedFiles(images);
     }

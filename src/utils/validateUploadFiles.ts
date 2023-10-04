@@ -1,10 +1,17 @@
+import { findDuplicatesInArray } from './findDuplicatesInArray';
+
 export const validateUploadFiles = (
   files: File[],
-  maxFileSizeInBytes: number,
-  acceptFileTypes: string[]
+  imageUploaderConfig: {
+    maxFileSizeInBytes: number;
+    acceptFileTypes: string[];
+    maxPhotosQuantity: number;
+  },
+  uploadedFiles: File[]
 ): File[] | undefined => {
-  if (files.length > 5) {
-    alert('Можно загрузить не более 5 фотографий!'); // TODO: кастомный из муи
+  const { maxFileSizeInBytes, acceptFileTypes, maxPhotosQuantity } = imageUploaderConfig;
+  if (files.length > maxPhotosQuantity) {
+    alert(`Можно загрузить не более ${maxPhotosQuantity} фотографий!`); // TODO: кастомный из муи
     return;
   }
   const images: File[] = [];
@@ -20,5 +27,16 @@ export const validateUploadFiles = (
       images.push(file);
     }
   });
-  return images;
+  const totalImages = [...uploadedFiles, ...images];
+  const photosNames = totalImages.map((file) => file.name);
+  const duplicates = findDuplicatesInArray(photosNames);
+  if (!!duplicates.length) {
+    alert('Нельзя загружать файлы с одинаковым именем! (убедитесь, что вы не загружаете одинаковые фотографии)'); // TODO: кастомный из муи
+    return;
+  }
+  if (totalImages.length > maxPhotosQuantity) {
+    alert(`Можно загрузить не более ${maxPhotosQuantity} фотографий!`); // TODO: кастомный из муи
+    return;
+  }
+  return totalImages;
 };
