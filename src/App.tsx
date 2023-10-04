@@ -5,7 +5,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import ru from 'date-fns/locale/ru';
 // import DateChooser from './components/DateChooser';
-import FileChooser from './components/FileChooser';
+import ImageUploader from './components/ImageUploader';
 import UsersList from './components/UsersList';
 
 function App() {
@@ -15,8 +15,11 @@ function App() {
       adapterLocale={ru}
     >
       {/* <DateChooser /> */}
-      {/* <FileChooser /> */}
-      <UsersList />
+      <ImageUploader
+        view="both"
+        isShowPreviews={true}
+      />
+      {/* <UsersList /> */}
     </LocalizationProvider>
 
     // <div className="app">
