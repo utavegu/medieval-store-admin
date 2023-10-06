@@ -1,0 +1,56 @@
+.mainContainer {
+  display: grid;
+  grid-template-columns: 300px auto;
+  padding: 0;
+  margin: 0;
+  background-color: var(--panel-backgroud-color);
+  box-shadow: 1px 1px 10px 7px #00000033;
+}
+
+.navContainer {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  color: var(--navigation-text-color);
+  background-color: var(--navigation-background-color);
+  line-height: normal;
+
+  & ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    & li {
+      border-top: 1px solid var(--navigation-item-border-top-color);
+      border-bottom: 1px solid var(--navigation-item-border-bottom-color);
+      :hover {
+        background-color: var(--navigation-item-hover-background-color);
+      }
+    }
+  }
+}
+
+.authContainer {
+  margin-top: auto;
+}
+
+.contentContainer {
+  padding: 20px 10px;
+}
+
+.link,
+.activeLink {
+  display: block;
+  padding: 10px;
+
+  /* TODO: ухты... цсс вон как научился... пробегись по всем css-файлам и порефактори. Может он ещё и миксины умеет уже? Погугли */
+  &:hover {
+    color: var(--navigation-hover-color);
+  }
+}
+
+.activeLink {
+  color: var(--navigation-active-color);
+}

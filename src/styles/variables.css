@@ -13,6 +13,13 @@
   --main-text-color: #000;
   --main-background-color: #eee;
   --panel-background-color: #fff;
+  --navigation-background-color: #32425c;
+  --navigation-text-color: #bbb;
+  --navigation-active-color: #fff;
+  --navigation-hover-color: #ddd;
+  --navigation-item-hover-background-color: #293449;
+  --navigation-item-border-top-color: #405069;
+  --navigation-item-border-bottom-color: #293449;
 
   /* media */
   --mobile-width: 375px;
