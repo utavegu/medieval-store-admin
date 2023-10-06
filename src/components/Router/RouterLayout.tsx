@@ -3,8 +3,6 @@ import Navigation from '../../layouts/Navigation/Navigation';
 import styles from './Router.module.css';
 
 const RouterLayout = () => {
-
-
   return (
     <div className={styles.mainContainer}>
       <div className={styles.navContainer}>

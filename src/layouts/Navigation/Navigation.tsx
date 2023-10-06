@@ -8,30 +8,30 @@ interface INavigationData {
 
 const navigationData: INavigationData[] = [
   {
-    title: "Страница авторизации без этого лэйаута",
-    path: "/",
+    title: 'Страница авторизации без этого лэйаута',
+    path: '/',
   },
   {
-    title: "Товары",
-    path: "/products",
+    title: 'Товары',
+    path: '/products',
   },
   {
-    title: "Пользователи",
-    path: "/users",
+    title: 'Пользователи',
+    path: '/users',
   },
   {
-    title: "Акции",
-    path: "/promotions",
+    title: 'Акции',
+    path: '/promotions',
   },
   {
-    title: "Филиалы / магазины (дизаблед)",
-    path: "/shops",
+    title: 'Филиалы / магазины (дизаблед)',
+    path: '/shops',
   },
   {
-    title: "Мета, хэад, тайтл, фавиконка, настройка страниц",
-    path: "/head",
-  }
-]
+    title: 'Мета, хэад, тайтл, фавиконка, настройка страниц',
+    path: '/head',
+  },
+];
 
 const NavigationItem = (data: INavigationData) => {
   const getLinkClass = ({ isActive }: { isActive: boolean }) => (isActive ? styles.activeLink : styles.link);
@@ -45,17 +45,22 @@ const NavigationItem = (data: INavigationData) => {
         {data.title}
       </NavLink>
     </li>
-  )
-}
+  );
+};
 
 const Navigation = () => {
   return (
     <nav>
       <ul>
-        {navigationData.map(navItemData => <NavigationItem key={navItemData.path} {...navItemData} />)}
+        {navigationData.map((navItemData) => (
+          <NavigationItem
+            key={navItemData.path}
+            {...navItemData}
+          />
+        ))}
       </ul>
     </nav>
-  )
-}
+  );
+};
 
 export default Navigation;
