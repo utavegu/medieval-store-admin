@@ -1,0 +1,9 @@
+.wrapper {
+  margin: 0 auto;
+  padding: 0;
+  max-width: var(--laptop-width);
+
+  @media (min-width: 1280px) {
+    padding: 0;
+  }
+}
