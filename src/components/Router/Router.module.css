@@ -39,18 +39,3 @@
 .contentContainer {
   padding: 20px 10px;
 }
-
-.link,
-.activeLink {
-  display: block;
-  padding: 10px;
-
-  /* TODO: ухты... цсс вон как научился... пробегись по всем css-файлам и порефактори. Может он ещё и миксины умеет уже? Погугли */
-  &:hover {
-    color: var(--navigation-hover-color);
-  }
-}
-
-.activeLink {
-  color: var(--navigation-active-color);
-}
