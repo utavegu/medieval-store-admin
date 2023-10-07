@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import RouterLayout from './RouterLayout';
-
-// В элементах роутов также будут отрисовываться компоненты, только не пэйджес, а табс (tabs, вкладки)... Или... в общем подумаю как лучше назвать. Может и страницы (pages - ProductsPage, UsersPage и т.д.)
+import ProductsPage from '../../pages/ProductsPage';
+import ProductPage from '../../pages/ProductPage';
 
 const RoutesComponent = () => {
   return (
@@ -16,7 +16,11 @@ const RoutesComponent = () => {
         />
         <Route
           path="products"
-          element={<h1>products page</h1>}
+          element={<ProductsPage />}
+        />
+        <Route
+          path="products/:id"
+          element={<ProductPage />}
         />
         <Route
           path="users"
