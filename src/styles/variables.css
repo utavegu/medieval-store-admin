@@ -1,0 +1,32 @@
+:root {
+  /* fonts */
+
+  /* --main-text: 400 14px/22px "Roboto Regular", oxygen, ubuntu, helvetica, arial, sans-serif;
+  --heading-text: 500 16px/24px "Roboto Medium", oxygen, ubuntu, helvetica, arial, sans-serif;
+  --label-text: 500 12px/16px "Roboto Medium", oxygen, ubuntu, helvetica, arial, sans-serif;
+  --card-description-text: 400 12px/20px "Roboto Regular", oxygen, ubuntu, helvetica, arial, sans-serif;
+  --font-card-main-heading: 500 28px/28px "Roboto Medium", oxygen, ubuntu, helvetica, arial, sans-serif;
+  --font-card-secondary-heading: 500 24px/28px "Roboto Medium", oxygen, ubuntu, helvetica, arial, sans-serif;
+  --font-card-third-heading: 500 20px/24px "Roboto Medium", oxygen, ubuntu, helvetica, arial, sans-serif; */
+
+  /* colors */
+  --main-text-color: #000;
+  --main-background-color: #eee;
+  --panel-background-color: #fff;
+  --navigation-background-color: #32425c;
+  --navigation-text-color: #bbb;
+  --navigation-active-color: #fff;
+  --navigation-hover-color: #ddd;
+  --navigation-item-hover-background-color: #293449;
+  --navigation-item-border-top-color: #405069;
+  --navigation-item-border-bottom-color: #293449;
+
+  /* media */
+  --mobile-width: 375px;
+  --tablet-width: 768px;
+  --laptop-width: 1280px;
+  --desktop-width: 1440px;
+
+  /* stacking context */
+  --modal-overlay-z-index: 9999;
+}
