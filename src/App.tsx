@@ -4,22 +4,17 @@ import React from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import ru from 'date-fns/locale/ru';
-// import DateChooser from './components/DateChooser';
-import ImageUploader from './components/ImageUploader';
-import UsersList from './components/UsersList';
+import Wrapper from './layouts/Wrapper/Wrapper';
+import RoutesComponent from './components/Router/RoutesComponent';
 
 function App() {
+  const isAuth = true; // берется из стора... Это пока так, черновик
   return (
     <LocalizationProvider
       dateAdapter={AdapterDateFns}
       adapterLocale={ru}
     >
-      {/* <DateChooser /> */}
-      <ImageUploader
-        view="both"
-        isShowPreviews={true}
-      />
-      {/* <UsersList /> */}
+      <Wrapper>{isAuth ? <RoutesComponent /> : <div>Страница с формой авторизации</div>}</Wrapper>
     </LocalizationProvider>
 
     // <div className="app">
