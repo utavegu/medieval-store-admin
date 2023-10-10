@@ -1,11 +1,20 @@
+.mainContainer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 20px 0;
+}
+
 .dropArea {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80vw;
-  height: 80vh;
-  font-size: 40px;
-  border: 5px dashed #000;
+  width: 400px;
+  height: 250px;
+  font-size: 20px;
+  border: 5px dashed var(--navigation-background-color);
+  text-align: center;
+  vertical-align: middle;
 }
 
 .previewsContainer {
