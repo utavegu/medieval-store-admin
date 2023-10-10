@@ -21,6 +21,8 @@
   --navigation-item-border-top-color: #405069;
   --navigation-item-border-bottom-color: #293449;
 
+  /* TODO: В рамках рефактора переименуй их в мэйн блю, секондари блю и тд, так как они повторяются и присутствуют не только в вышеназваных местах. И сделай автозамену по всему проекту. */
+
   /* media */
   --mobile-width: 375px;
   --tablet-width: 768px;

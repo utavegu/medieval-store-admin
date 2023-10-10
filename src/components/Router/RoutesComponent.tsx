@@ -23,6 +23,10 @@ const RoutesComponent = () => {
           element={<ProductPage />}
         />
         <Route
+          path="products/categories"
+          element={<>Добавление/удаление категорий, типов и подтипов товара. Только для админов</>}
+        />
+        <Route
           path="users"
           element={<h1>users page</h1>}
         />
