@@ -11,6 +11,7 @@ const ProductsTable = ({ products }: { products: IProduct[] }) => {
           <th scope="col">Название</th>
           <th scope="col">Цена</th>
           <th scope="col">Добавлен</th>
+          {/* TODO: Время маленько от балды выставляет, надо разобраться */}
           <th scope="col">Обновлен</th>
           <th scope="col"></th>
         </tr>

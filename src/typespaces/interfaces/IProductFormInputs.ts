@@ -4,8 +4,8 @@ export interface IProductFormInputs {
   description?: string;
   price: string; // number; или на сервере "стринг-намбер"? TODO
   discount?: string; // number; или на сервере "стринг-намбер"? TODO
-  category: string | [string]; // ProductCategory;
-  type: string | [string]; // ProductType;
-  subtype?: string | [string]; // ProductSubtype;
+  category: string; // ProductCategory;
+  type: string; // ProductType;
+  subtype?: string; // ProductSubtype;
   photos?: [string];
 }
