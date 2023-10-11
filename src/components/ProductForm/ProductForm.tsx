@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { FieldError, FieldErrorsImpl, Merge, useForm } from 'react-hook-form';
 import { TextField, FormControl, InputLabel, MenuItem, Select, FormHelperText, Button } from '@mui/material';
 import { useAddProductMutation } from '../../api/products-api';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 import ImageUploader from '../ImageUploader';
 import { IProductFormInputs } from '../../typespaces/interfaces/IProductFormInputs';
 import { IProductSubtype, IProductType } from '../../typespaces/interfaces/IProductsCategories';
@@ -113,21 +114,10 @@ const ProductForm = () => {
     }
   };
 
-  // TODO - интерфейс еррор-враппера. А может и вовсе убрать его, раз тут свой есть.
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const errorMessage = error?.data?.data?.errorMessage?.message
-    ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      error?.data?.data?.errorMessage?.message
-    : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      error?.data?.data?.errorMessage;
-
   // TODO: Лучше через 3 ретурна это сделать, думаю. Или вообще разные страницы для добавления, редактирования и тд.
   return (
     <>
-      {createProductError && <div>Ошибка: {JSON.stringify(errorMessage)}</div>}
+      {createProductError && <div>Ошибка: {getErrorMessage(error)}</div>}
       {createProductSuccess && <div>Форма успешно отправлена!</div>}
       {!createProductSuccess && !createProductError && (
         <form onSubmit={handleSubmitWrapper(handleSubmit)}>

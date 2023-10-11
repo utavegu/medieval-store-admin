@@ -27,7 +27,20 @@ export const productsApi = createApi({
       }),
       invalidatesTags: [{ type: 'Products' }],
     }),
+    deleteProduct: builder.mutation<void, IProduct['_id']>({
+      query: (id) => ({
+        url: `/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [{ type: 'Products' }],
+    }),
+    getTargetProduct: builder.query<IProduct, IProduct['_id']>({
+      query: (id) => ({
+        url: `/${id}`,
+      }),
+    }),
   }),
 });
 
-export const { useGetProductsQuery, useAddProductMutation } = productsApi;
+export const { useGetProductsQuery, useAddProductMutation, useDeleteProductMutation, useGetTargetProductQuery } =
+  productsApi;
