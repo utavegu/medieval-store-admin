@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useDeleteProductMutation } from '../../api/products-api';
 import { getPrettyDateTime } from '../../utils/getPrettyDateTime';
 import { IProduct } from '../../typespaces/interfaces/IProduct';
 import styles from './ProductsTable.module.css';
@@ -10,6 +11,14 @@ const ProductsTableRow = ({
   createdAt,
   updatedAt,
 }: Pick<IProduct, '_id' | 'productName' | 'price' | 'createdAt' | 'updatedAt'>) => {
+  const [deleteUser] = useDeleteProductMutation();
+
+  // TODO: Всплывашка "Вы действительно хотите удалить товар?"
+  // TODO: Статусы удаления (загрузка, успех, ошибка)
+  const handleDeleteProduct = async (id: IProduct['_id']) => {
+    await deleteUser(id);
+  };
+
   return (
     <tr>
       <td>{productName}</td>
@@ -28,6 +37,7 @@ const ProductsTableRow = ({
         <button
           className={styles.buttonRemove}
           title="Удалить товар"
+          onClick={() => handleDeleteProduct(_id)}
         >
           <span className="visually-hidden">Удалить товар</span>
         </button>

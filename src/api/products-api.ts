@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { IProduct } from '../typespaces/interfaces/IProduct';
+import { IProductFormInputs } from '../typespaces/interfaces/IProductFormInputs';
 
 // TODO: научить Реакт кушать енвы из композа
 const temporaryBaseApiUrl = 'http://localhost:4000/api';
@@ -18,7 +19,28 @@ export const productsApi = createApi({
       }),
       providesTags: (result) => ['Products'],
     }),
+    addProduct: builder.mutation<IProduct, FormData>({
+      query: (body) => ({
+        url: '',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [{ type: 'Products' }],
+    }),
+    deleteProduct: builder.mutation<void, IProduct['_id']>({
+      query: (id) => ({
+        url: `/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [{ type: 'Products' }],
+    }),
+    getTargetProduct: builder.query<IProduct, IProduct['_id']>({
+      query: (id) => ({
+        url: `/${id}`,
+      }),
+    }),
   }),
 });
 
-export const { useGetProductsQuery } = productsApi;
+export const { useGetProductsQuery, useAddProductMutation, useDeleteProductMutation, useGetTargetProductQuery } =
+  productsApi;
