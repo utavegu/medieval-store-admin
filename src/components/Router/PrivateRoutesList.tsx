@@ -1,18 +1,25 @@
-import { Routes, Route } from 'react-router-dom';
-import RouterLayout from './RouterLayout';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import PrivateRouterLayout from './PrivateRouterLayout';
+import SuitableRoleWrapper from './SuitableRoleWrapper';
 import ProductsPage from '../../pages/ProductsPage';
 import ProductPage from '../../pages/ProductPage';
 
-const RoutesComponent = () => {
+const PrivateRoutesList = () => {
+  const isAdmin = false; // TODO: Вообще лучше пропсом сверху из апп, так как стор планирую прокинуть туда
   return (
     <Routes>
       <Route
         path="/"
-        element={<RouterLayout />}
+        element={<PrivateRouterLayout />}
       >
         <Route
           index
-          element={<h1>main page</h1>}
+          element={
+            <Navigate
+              to="products"
+              replace
+            />
+          }
         />
         <Route
           path="products"
@@ -24,7 +31,14 @@ const RoutesComponent = () => {
         />
         <Route
           path="products/categories"
-          element={<>Добавление/удаление категорий, типов и подтипов товара. Только для админов</>}
+          element={
+            <SuitableRoleWrapper
+              redirectPath="/products"
+              isSuitableRole={isAdmin}
+            >
+              <>Добавление/удаление категорий, типов и подтипов товара. Только для админов</>
+            </SuitableRoleWrapper>
+          }
         />
         <Route
           path="users"
@@ -32,7 +46,7 @@ const RoutesComponent = () => {
         />
         <Route
           path="promotions"
-          element={<h1>promotions page</h1>}
+          element={<h1>promotions page (акции и новости)</h1>}
         />
         <Route
           path="shops"
@@ -77,4 +91,4 @@ const RoutesComponent = () => {
   );
 };
 
-export default RoutesComponent;
+export default PrivateRoutesList;

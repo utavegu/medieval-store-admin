@@ -5,16 +5,18 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import ru from 'date-fns/locale/ru';
 import Wrapper from './layouts/Wrapper/Wrapper';
-import RoutesComponent from './components/Router/RoutesComponent';
+import PrivateRoutesList from './components/Router/PrivateRoutesList';
+import PublicRoutesList from './components/Router/PublicRoutesList';
 
 function App() {
-  const isAuth = true; // берется из стора... Это пока так, черновик
+  const isAuth = true; // TODO: в перспективе - из стора. А лучше сразу юзера - если его нет, значит неавторизован. Заодно сразу роль достанешь и прокинешь в приват-роутер-лист
+
   return (
     <LocalizationProvider
       dateAdapter={AdapterDateFns}
       adapterLocale={ru}
     >
-      <Wrapper>{isAuth ? <RoutesComponent /> : <div>Страница с формой авторизации</div>}</Wrapper>
+      <Wrapper>{isAuth ? <PrivateRoutesList /> : <PublicRoutesList />}</Wrapper>
     </LocalizationProvider>
 
     // <div className="app">
