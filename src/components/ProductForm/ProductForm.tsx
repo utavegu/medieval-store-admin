@@ -15,6 +15,7 @@ TODO:
 - Решить вопрос со сбросом селектов после отправки формы. В данный момент никак их не сбрасываю, так хотя бы нет ошибок неочевидных... а хотя нет, можно поменять категорию, при этом подкатегория сбросится, но валидацию всё равно пройдёт, так как какое-то значение останется - то же самое, что было и в прошлый раз. Так что, при текущей реализации, как минимум при смене категории надо сбрасывать значение типа. Однако посмотрю ещё как при подключении бэка всё это поменяется.
 Пока в качестве костыля можно так - 3 секунды показывать, что форма успешно отправлена (или ошибку), затем редиректить на список продуктов (кстати у меня это будет смена стейта и надо посмотреть будут ли сохраняться значения полей и прочее при этом)
 Или можно вместе со статусом отправки формы (как ошибки, так и успеха) отображать 2 кнопки - добавить товар, вернуться к таблице товаров
+Если не решу этот вопрос малой кровью, то для редактирования и добавления сделать отдельные страницы: /products/add и products/:id/edit
 */
 
 const getErrorDescription = (message: string | FieldError | Merge<FieldError, FieldErrorsImpl<any>>) => {
@@ -42,10 +43,8 @@ const ProductForm = () => {
     },
   });
 
-  const [
-    addProduct,
-    { isLoading: createProductLoading, isError: createProductError, isSuccess: createProductSuccess, error },
-  ] = useAddProductMutation();
+  const [addProduct, { isLoading: createProductLoading, isSuccess: createProductSuccess, error: createProductError }] =
+    useAddProductMutation();
 
   const [targetTypes, setTargetTypes] = useState<IProductType[]>([]);
   const [targetSubtypes, setTargetSubtypes] = useState<IProductSubtype[]>([]);
@@ -114,224 +113,225 @@ const ProductForm = () => {
     }
   };
 
-  // TODO: Лучше через 3 ретурна это сделать, думаю. Или вообще разные страницы для добавления, редактирования и тд.
+  if (createProductError) {
+    return <div>Ошибка: {getErrorMessage(createProductError)}</div>;
+  }
+
+  if (createProductSuccess) {
+    return <div>Форма успешно отправлена!</div>;
+  }
+
   return (
-    <>
-      {createProductError && <div>Ошибка: {getErrorMessage(error)}</div>}
-      {createProductSuccess && <div>Форма успешно отправлена!</div>}
-      {!createProductSuccess && !createProductError && (
-        <form onSubmit={handleSubmitWrapper(handleSubmit)}>
-          {/* TODO: Вообще margin=normal не достаточно, чтобы интерфейс не дёргался при появлении дескрипшина ошибок. Но можно уменьшить шрифт в них или сделать их абсолютами */}
-          <FormControl
-            margin="normal"
-            fullWidth
-          >
-            <InputLabel
-              htmlFor="product-name"
-              className="visually-hidden"
-            >
-              Название товара
-            </InputLabel>
-            <TextField
-              id="product-name"
-              label="Название товара"
-              variant="outlined"
-              autoComplete="off"
-              error={!!errors?.productName}
-              helperText={errors?.productName?.message && getErrorDescription(errors.productName.message)}
-              {...register('productName', {
-                required: 'Укажите название товара',
-                minLength: {
-                  value: 2,
-                  message: 'Название товара должно быть не короче двух символов',
-                },
-                maxLength: {
-                  value: 30,
-                  message: 'Название товара должно быть не длиннее тридцати символов',
-                },
-              })}
-            />
-          </FormControl>
+    <form onSubmit={handleSubmitWrapper(handleSubmit)}>
+      {/* TODO: Вообще margin=normal не достаточно, чтобы интерфейс не дёргался при появлении дескрипшина ошибок. Но можно уменьшить шрифт в них или сделать их абсолютами */}
+      <FormControl
+        margin="normal"
+        fullWidth
+      >
+        <InputLabel
+          htmlFor="product-name"
+          className="visually-hidden"
+        >
+          Название товара
+        </InputLabel>
+        <TextField
+          id="product-name"
+          label="Название товара"
+          variant="outlined"
+          autoComplete="off"
+          error={!!errors?.productName}
+          helperText={errors?.productName?.message && getErrorDescription(errors.productName.message)}
+          {...register('productName', {
+            required: 'Укажите название товара',
+            minLength: {
+              value: 2,
+              message: 'Название товара должно быть не короче двух символов',
+            },
+            maxLength: {
+              value: 30,
+              message: 'Название товара должно быть не длиннее тридцати символов',
+            },
+          })}
+        />
+      </FormControl>
 
-          <FormControl
-            margin="normal"
-            fullWidth
-          >
-            <InputLabel
-              htmlFor="product-description"
-              className="visually-hidden"
-            >
-              Описание товара
-            </InputLabel>
-            <TextField
-              id="product-description"
-              label="Описание товара"
-              variant="outlined"
-              autoComplete="off"
-              multiline
-              error={!!errors?.description}
-              helperText={errors?.description?.message && getErrorDescription(errors.description.message)}
-              {...register('description', {})}
-            />
-          </FormControl>
+      <FormControl
+        margin="normal"
+        fullWidth
+      >
+        <InputLabel
+          htmlFor="product-description"
+          className="visually-hidden"
+        >
+          Описание товара
+        </InputLabel>
+        <TextField
+          id="product-description"
+          label="Описание товара"
+          variant="outlined"
+          autoComplete="off"
+          multiline
+          error={!!errors?.description}
+          helperText={errors?.description?.message && getErrorDescription(errors.description.message)}
+          {...register('description', {})}
+        />
+      </FormControl>
 
-          <FormControl
-            margin="normal"
-            fullWidth
-          >
-            <InputLabel
-              htmlFor="product-price"
-              className="visually-hidden"
-            >
-              Описание товара
-            </InputLabel>
-            <TextField
-              id="product-price"
-              label="Цена"
-              variant="outlined"
-              autoComplete="off"
-              error={!!errors?.price}
-              helperText={errors?.price?.message && getErrorDescription(errors.price.message)}
-              {...register('price', {
-                required: 'Поле должно быть заполнено',
-                pattern: {
-                  value: /^\d+(\.\d\d)?$/,
-                  message: 'Допустимо положительное целое число или число с двумя знаками после точки',
-                },
-              })}
-            />
-          </FormControl>
+      <FormControl
+        margin="normal"
+        fullWidth
+      >
+        <InputLabel
+          htmlFor="product-price"
+          className="visually-hidden"
+        >
+          Описание товара
+        </InputLabel>
+        <TextField
+          id="product-price"
+          label="Цена"
+          variant="outlined"
+          autoComplete="off"
+          error={!!errors?.price}
+          helperText={errors?.price?.message && getErrorDescription(errors.price.message)}
+          {...register('price', {
+            required: 'Поле должно быть заполнено',
+            pattern: {
+              value: /^\d+(\.\d\d)?$/,
+              message: 'Допустимо положительное целое число или число с двумя знаками после точки',
+            },
+          })}
+        />
+      </FormControl>
 
-          <FormControl
-            margin="normal"
-            fullWidth
-          >
-            <InputLabel
-              htmlFor="product-discount"
-              className="visually-hidden"
-            >
-              Описание товара
-            </InputLabel>
-            <TextField
-              // TODO: Пока думаю как поправить, чтобы не трогать валидацию на бэке (формдата ест только строковые значения)
-              disabled
-              id="product-discount"
-              label="Скидка"
-              variant="outlined"
-              autoComplete="off"
-              error={!!errors?.discount}
-              helperText={errors?.discount?.message && getErrorDescription(errors.discount.message)}
-              {...register('discount', {
-                pattern: {
-                  value: /^[0-9][0-9]?$|^100$/,
-                  message: 'Допустимо положительное целое число от 0 до 100',
-                },
-              })}
-            />
-          </FormControl>
+      <FormControl
+        margin="normal"
+        fullWidth
+      >
+        <InputLabel
+          htmlFor="product-discount"
+          className="visually-hidden"
+        >
+          Описание товара
+        </InputLabel>
+        <TextField
+          // TODO: Пока думаю как поправить, чтобы не трогать валидацию на бэке (формдата ест только строковые значения)
+          disabled
+          id="product-discount"
+          label="Скидка"
+          variant="outlined"
+          autoComplete="off"
+          error={!!errors?.discount}
+          helperText={errors?.discount?.message && getErrorDescription(errors.discount.message)}
+          {...register('discount', {
+            pattern: {
+              value: /^[0-9][0-9]?$|^100$/,
+              message: 'Допустимо положительное целое число от 0 до 100',
+            },
+          })}
+        />
+      </FormControl>
 
-          <FormControl
-            margin="normal"
-            fullWidth
-            error={!!errors?.category}
-          >
-            <InputLabel id="product-category">Категория товара</InputLabel>
-            <Select
-              labelId="product-category"
-              label="Категория товара"
-              variant="outlined"
-              {...register('category', {
-                required: 'Нужно выбрать категорию',
-              })}
-            >
-              {mockCategories.map((category, i) => {
-                return (
-                  <MenuItem
-                    key={i}
-                    value={category._id}
-                  >
-                    {category.productCategoryName}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-            <FormHelperText>{errors?.category?.message && getErrorDescription(errors.category.message)}</FormHelperText>
-          </FormControl>
-
-          {!!targetTypes.length && (
-            <FormControl
-              margin="normal"
-              fullWidth
-              error={!!errors?.type}
-            >
-              <InputLabel id="product-type">Тип товара</InputLabel>
-              <Select
-                labelId="product-type"
-                label="Тип товара"
-                variant="outlined"
-                {...register('type', {
-                  required: 'Нужно выбрать тип',
-                })}
+      <FormControl
+        margin="normal"
+        fullWidth
+        error={!!errors?.category}
+      >
+        <InputLabel id="product-category">Категория товара</InputLabel>
+        <Select
+          labelId="product-category"
+          label="Категория товара"
+          variant="outlined"
+          {...register('category', {
+            required: 'Нужно выбрать категорию',
+          })}
+        >
+          {mockCategories.map((category, i) => {
+            return (
+              <MenuItem
+                key={i}
+                value={category._id}
               >
-                {targetTypes.map((type, i) => {
-                  return (
-                    <MenuItem
-                      key={i}
-                      value={type._id}
-                    >
-                      {type.productTypeName}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-              <FormHelperText>{errors?.type?.message && getErrorDescription(errors.type.message)}</FormHelperText>
-            </FormControl>
-          )}
+                {category.productCategoryName}
+              </MenuItem>
+            );
+          })}
+        </Select>
+        <FormHelperText>{errors?.category?.message && getErrorDescription(errors.category.message)}</FormHelperText>
+      </FormControl>
 
-          {!!targetSubtypes.length && (
-            <FormControl
-              margin="normal"
-              fullWidth
-              error={!!errors?.type}
-            >
-              <InputLabel id="product-subtype">Подтип товара</InputLabel>
-              <Select
-                labelId="product-subtype"
-                label="Подтип товара"
-                variant="outlined"
-                {...register('subtype', {})}
-              >
-                {targetSubtypes.map((subtype, i) => {
-                  return (
-                    <MenuItem
-                      key={i}
-                      value={subtype._id}
-                    >
-                      {subtype.productSubtypeName}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-              <FormHelperText>{errors?.subtype?.message && getErrorDescription(errors.subtype.message)}</FormHelperText>
-            </FormControl>
-          )}
-
-          <ImageUploader
-            uploadedFiles={uploadedFiles}
-            setUploadedFiles={setUploadedFiles}
-            view="both"
-          />
-
-          <Button
+      {!!targetTypes.length && (
+        <FormControl
+          margin="normal"
+          fullWidth
+          error={!!errors?.type}
+        >
+          <InputLabel id="product-type">Тип товара</InputLabel>
+          <Select
+            labelId="product-type"
+            label="Тип товара"
             variant="outlined"
-            type="submit"
-            disabled={createProductLoading}
+            {...register('type', {
+              required: 'Нужно выбрать тип',
+            })}
           >
-            {createProductLoading ? 'Отправить форму' : 'Отправка формы...'}
-          </Button>
-        </form>
+            {targetTypes.map((type, i) => {
+              return (
+                <MenuItem
+                  key={i}
+                  value={type._id}
+                >
+                  {type.productTypeName}
+                </MenuItem>
+              );
+            })}
+          </Select>
+          <FormHelperText>{errors?.type?.message && getErrorDescription(errors.type.message)}</FormHelperText>
+        </FormControl>
       )}
-    </>
+
+      {!!targetSubtypes.length && (
+        <FormControl
+          margin="normal"
+          fullWidth
+          error={!!errors?.type}
+        >
+          <InputLabel id="product-subtype">Подтип товара</InputLabel>
+          <Select
+            labelId="product-subtype"
+            label="Подтип товара"
+            variant="outlined"
+            {...register('subtype', {})}
+          >
+            {targetSubtypes.map((subtype, i) => {
+              return (
+                <MenuItem
+                  key={i}
+                  value={subtype._id}
+                >
+                  {subtype.productSubtypeName}
+                </MenuItem>
+              );
+            })}
+          </Select>
+          <FormHelperText>{errors?.subtype?.message && getErrorDescription(errors.subtype.message)}</FormHelperText>
+        </FormControl>
+      )}
+
+      <ImageUploader
+        uploadedFiles={uploadedFiles}
+        setUploadedFiles={setUploadedFiles}
+        view="both"
+      />
+
+      <Button
+        variant="outlined"
+        type="submit"
+        disabled={createProductLoading}
+      >
+        {createProductLoading ? 'Отправить форму' : 'Отправка формы...'}
+      </Button>
+    </form>
   );
 };
 
