@@ -1,11 +1,30 @@
+import { FC } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import PrivateRouterLayout from './PrivateRouterLayout';
 import SuitableRoleWrapper from './SuitableRoleWrapper';
 import ProductsPage from '../../pages/ProductsPage';
 import ProductPage from '../../pages/ProductPage';
+import { IUser } from '../../typespaces/interfaces/IUser';
 
-const PrivateRoutesList = () => {
-  const isAdmin = false; // TODO: Вообще лучше пропсом сверху из апп, так как стор планирую прокинуть туда
+interface PropTypes {
+  role: IUser['role'];
+  isActivatedProfile: IUser['isActivated'];
+}
+
+const PrivateRoutesList: FC<PropTypes> = ({ role, isActivatedProfile }) => {
+  // TODO: пока сделаю !, ибо никто свои учётки так и не активировал, лентяи -_-
+  if (!isActivatedProfile === false) {
+    return (
+      <div>
+        Ваша учётная запись не активна, закончите процедуру активации, прежде чем продолжить (разлониниться и
+        попробовать ещё раз)
+      </div>
+    );
+  }
+  if (role === 'client') {
+    return <div>Панель администратора недоступна клиентам! (разлониниться и попробовать ещё раз)</div>;
+  }
+
   return (
     <Routes>
       <Route
@@ -34,7 +53,7 @@ const PrivateRoutesList = () => {
           element={
             <SuitableRoleWrapper
               redirectPath="/products"
-              isSuitableRole={isAdmin}
+              isSuitableRole={role === 'admin'}
             >
               <>Добавление/удаление категорий, типов и подтипов товара. Только для админов</>
             </SuitableRoleWrapper>

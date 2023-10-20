@@ -329,7 +329,7 @@ const ProductForm = () => {
         type="submit"
         disabled={createProductLoading}
       >
-        {createProductLoading ? 'Отправить форму' : 'Отправка формы...'}
+        {!createProductLoading ? 'Отправить форму' : 'Отправка формы...'}
       </Button>
     </form>
   );
