@@ -15,7 +15,7 @@ const ProductsPage = () => {
   const [productsPageMode, setProductsPageMode] = useState<'viewing' | 'addition' | 'editing'>('viewing');
 
   // TODO: эсинк-эвэйт для data под капотом?
-  const { data: products = [], isLoading: fetchProductsLoading, isError: fetchProductsError } = useGetProductsQuery('');
+  const { data: products = [], isLoading: fetchProductsLoading, isError: fetchProductsError } = useGetProductsQuery();
 
   return (
     <>

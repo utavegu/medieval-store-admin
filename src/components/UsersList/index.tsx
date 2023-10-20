@@ -1,25 +1,15 @@
 import { FormEvent, useState } from 'react';
 import { useAddUserMutation, useDeleteUserMutation, useGetUsersQuery } from '../../api/users-api';
+import { IUsersQueryParameters } from '../../typespaces/interfaces/IUsersQueryParameters';
+import { IUser } from '../../typespaces/interfaces/IUser';
+import { HandleInputChangeType } from '../../typespaces/types/HandleInputChangeType';
+
+// TODO: Тут, по хорошему, вообще всё переделывать надо, это я просто тренировался что-то в пустом проекте ещё с фэйковой апи. Сейчас правильная версия - это как в продуктах, например.
 
 // TODO: Тут же тренируешься и в выставлении квери-параметров в строку. Вроде у объекта URL (смотри в базе, кстати), есть специальный механизм по работе с квери-параметрами. Туда пихаешь все, что не пустые. Пустые не пихаешь. Можно на этом же этапе лимит и оффсет преобразовывать в нумбер (если имя поля лимит или оффсет)
 
-// не тут, тайпспэйсес
-type HandleInputChangeType = {
-  target:
-    | (EventTarget & { name: string; value: string | number | boolean })
-    | { name: string; value: boolean | string | [] };
-};
-
-interface IQueryParameters {
-  limit?: string; // на сервере number, но там, вроде стоит преобразовывалка
-  offset?: string; // на сервере number, но там, вроде стоит преобразовывалка
-  email?: string;
-  firstName?: string;
-  contactPhone?: string;
-}
-
 const UsersList = () => {
-  const [queryParameters, setQueryParameters] = useState<IQueryParameters>({
+  const [queryParameters, setQueryParameters] = useState<IUsersQueryParameters>({
     limit: '10',
     offset: '0',
     email: '',
@@ -61,13 +51,15 @@ const UsersList = () => {
   const handleAddUser = async (event: FormEvent) => {
     event.preventDefault();
     // если нет валидатора, можно проверить что поля формы не пусты, но по хорошему делать нормальную валидацию и не париться
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     await addUser(form).unwrap();
     setForm(formInitialState); // если ошибка отправки - не затирать
   };
 
   // TODO: и для ошибки используй не isError, а error - чтобы отображать детали ошибки на экран. Хотя, по хорошему, конечно, валидатор на фронтенде должен максимально не допускать такой ситуации, чтобы с бэка прилетала ошибка. Потому для экстренных случаев лучше показывать ее в консоль-еррор, а не в юзер интерфейс
 
-  const handleDeleteUser = async (id: number) => {
+  const handleDeleteUser = async (id: IUser['id']) => {
     await deleteUser(id).unwrap();
   };
 
@@ -189,14 +181,14 @@ const UsersList = () => {
         <option value="3">3</option>
       </select>
 
-      <div>Всего пользователей в базе: {users?.totalUsersCount}</div>
+      {/* <div>Всего пользователей в базе: {users?.totalUsersCount}</div> */}
 
       <ul>
         {/* Вообще по отображению лоадера мне видится так - во время любого запроса юзеров по сети (добавление, фетч, удаление, редактирование...) весить на список юзеров "невидимое стекло", через которое блочится интерфейс управления юзерами, а сами записи становятся серыми, а посредине его крутится лоадер */}
 
         {fetchUsersLoading && <div>Загрузка данных с сервера...</div>}
         {fetchUsersError && <div>Ошибка загрузки данных с сервера! </div>}
-        {users?.findedUsers?.map((user: any) => (
+        {/* {users?.findedUsers?.map((user: any) => (
           <li
             key={user._id}
             onClick={() => handleDeleteUser(user._id)}
@@ -204,7 +196,7 @@ const UsersList = () => {
           >
             {user.email} {user.lastName} {user.firstName}
           </li>
-        ))}
+        ))} */}
       </ul>
     </>
   );
