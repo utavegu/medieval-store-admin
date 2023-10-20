@@ -8,10 +8,6 @@ interface INavigationData {
 
 const navigationData: INavigationData[] = [
   {
-    title: 'Страница авторизации без этого лэйаута',
-    path: '/',
-  },
-  {
     title: 'Товары',
     path: '/products',
   },

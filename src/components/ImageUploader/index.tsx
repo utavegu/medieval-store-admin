@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { declOfNum } from '../../utils/declOfNum';
 import FileDropArea from './FileDropArea';
 import ChooseFileInput from './ChooseFileInput';
@@ -16,12 +16,21 @@ const imageUploaderConfig: {
 };
 
 type PropTypes = {
+  uploadedFiles: File[];
+  setUploadedFiles: (files: File[]) => void;
   view: 'area' | 'input' | 'both'; // TODO: enum
-  isShowPreviews: boolean;
+  isShowPreviews?: boolean;
+  isEditMode?: boolean;
 };
 
-const ImageUploader: FC<PropTypes> = ({ view, isShowPreviews }) => {
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+const ImageUploader: FC<PropTypes> = ({
+  uploadedFiles,
+  setUploadedFiles,
+  view,
+  isShowPreviews = true,
+  isEditMode = false,
+}) => {
+  // const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   const deleteImageHandler = (fileName: string) => {
     const editedUploadedFiles = uploadedFiles.filter((file) => file.name !== fileName);
@@ -38,10 +47,11 @@ const ImageUploader: FC<PropTypes> = ({ view, isShowPreviews }) => {
     ? `Можно загрузить ещё ${freeSlotsLeft} ${declOfNum(freeSlotsLeft, ['фотографию', 'фотографии', 'фотографий'])}`
     : 'Вы загрузили максимальное количество фотографий';
 
+  // TODO: Вероятно форме не понравится, что ты див
   return (
     <div>
       {!(freeSlotsLeft <= 0) && (
-        <div>
+        <div className={styles.mainContainer}>
           {(view === 'area' || view === 'both') && (
             <FileDropArea
               uploadedFiles={uploadedFiles}
@@ -49,6 +59,7 @@ const ImageUploader: FC<PropTypes> = ({ view, isShowPreviews }) => {
               imageUploaderConfig={imageUploaderConfig}
             />
           )}
+          {view === 'both' && <p>или</p>}
           {(view === 'input' || view === 'both') && (
             <ChooseFileInput
               uploadedFiles={uploadedFiles}

@@ -12,7 +12,7 @@ const ChooseFileInput = ({ uploadedFiles, addUploadedFiles, imageUploaderConfig 
 
   return (
     <label style={{ cursor: 'pointer' }}>
-      Загрузить файлы
+      Выберите файлы
       <input
         style={{ display: 'none' }}
         type="file"
