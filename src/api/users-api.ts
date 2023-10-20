@@ -1,38 +1,17 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-// TODO: НЕ ТУТ. И сам интерфейс пока фэйковый, бери с бэка
-interface IUser {
-  id: number;
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-}
-
-interface IQueryParameters {
-  limit?: string;
-  offset?: string;
-  email?: string;
-  firstName?: string;
-  contactPhone?: string;
-}
-
-// TODO: научить Реакт кушать енвы из композа
-const temporaryBaseApiUrl = 'http://localhost:4000/api';
-// console.log(process.env);
-// Проверять ноденв и менять ЕНВ, в зависимости от этого (контур)
-const baseApiUrl = process.env.NODE_ENV === 'development' ? process.env.BASE_API_URL_DEV : 'чото другое';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import baseQueryWithReauth from './baseQueryWithReauth';
+import { IUsersQueryParameters } from '../typespaces/interfaces/IUsersQueryParameters';
+import { IUser } from '../typespaces/interfaces/IUser';
 
 export const usersAPI = createApi({
   reducerPath: 'usersAPI',
   tagTypes: ['Users'],
-  baseQuery: fetchBaseQuery({ baseUrl: `${temporaryBaseApiUrl}/users` }),
+  baseQuery: baseQueryWithReauth,
   endpoints: (build) => ({
     // запросить с сервера всех пользователей (возможна фильтрация по параметрам)
-    getUsers: build.query<any, IQueryParameters>({
-      // getUsers: build.query<IUser[], string>({
+    getUsers: build.query<IUser[], IUsersQueryParameters>({
       query: ({ limit = 10, offset = 0 }) => ({
-        url: '',
+        url: 'users',
         params: {
           limit: limit,
           offset: offset,
@@ -50,7 +29,7 @@ export const usersAPI = createApi({
     // создать пользователя
     addUser: build.mutation<IUser, Omit<IUser, 'id'>>({
       query: (body) => ({
-        url: '',
+        url: 'users',
         method: 'POST',
         body,
       }),
@@ -58,24 +37,31 @@ export const usersAPI = createApi({
     }),
 
     // удалить пользователя
-    deleteUser: build.mutation({
+    deleteUser: build.mutation<void, IUser['id']>({
       query: (id) => ({
-        url: `/${id}`,
+        url: `users/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: [{ type: 'Users' }],
     }),
 
     // редактировать пользователя
-    updateUser: build.mutation<IUser, IUser>({
+    updateUser: build.mutation<IUser, Partial<IUser>>({
       query: (user) => ({
-        url: `/${user.id}`,
+        url: `users/${user.id}`,
         method: 'PUT',
         body: user,
       }),
       invalidatesTags: [{ type: 'Users' }],
     }),
+
+    // запросить конкретного пользователя по id
+    getTargetUser: build.query<IUser, IUser['id']>({
+      query: (id) => ({
+        url: `users/${id}`,
+      }),
+    }),
   }),
 });
 
-export const { useGetUsersQuery, useAddUserMutation, useDeleteUserMutation } = usersAPI;
+export const { useGetUsersQuery, useAddUserMutation, useDeleteUserMutation, useLazyGetTargetUserQuery } = usersAPI;
