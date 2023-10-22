@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { IProduct } from '../typespaces/interfaces/IProduct';
 import baseQueryWithReauth from './baseQueryWithReauth';
+import { IProduct } from '../typespaces/interfaces/IProduct';
+import { IProductCategory, IProductType, IProductSubtype } from '../typespaces/interfaces/IProductsCategories';
 
 export const productsApi = createApi({
   reducerPath: 'productsApi',
@@ -33,8 +34,30 @@ export const productsApi = createApi({
         url: `products/${id}`,
       }),
     }),
+    getProductsCategories: builder.query<IProductCategory[], void>({
+      query: () => ({
+        url: 'products/categories',
+      }),
+    }),
+    getAllProductTypesInCategory: builder.query<IProductType[], IProductCategory['_id']>({
+      query: (id) => ({
+        url: `products/types/${id}`,
+      }),
+    }),
+    getAllProductSubtypesInType: builder.query<IProductSubtype[], IProductType['_id']>({
+      query: (id) => ({
+        url: `products/subtypes/${id}`,
+      }),
+    }),
   }),
 });
 
-export const { useGetProductsQuery, useAddProductMutation, useDeleteProductMutation, useGetTargetProductQuery } =
-  productsApi;
+export const {
+  useGetProductsQuery,
+  useAddProductMutation,
+  useDeleteProductMutation,
+  useGetTargetProductQuery,
+  useGetProductsCategoriesQuery,
+  useLazyGetAllProductTypesInCategoryQuery,
+  useLazyGetAllProductSubtypesInTypeQuery,
+} = productsApi;

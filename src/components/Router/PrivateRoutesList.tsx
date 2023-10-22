@@ -2,8 +2,11 @@ import { FC } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import PrivateRouterLayout from './PrivateRouterLayout';
 import SuitableRoleWrapper from './SuitableRoleWrapper';
-import ProductsPage from '../../pages/ProductsPage';
-import ProductPage from '../../pages/ProductPage';
+import SuccessPage from '../../pages/SuccessPage';
+import ErrorPage from '../../pages/ErrorPage';
+import ProductsPage from '../../pages/products/ProductsPage';
+import ProductPage from '../../pages/products/ProductPage';
+import AddProductPage from '../../pages/products/AddProductPage';
 import { IUser } from '../../typespaces/interfaces/IUser';
 
 interface PropTypes {
@@ -41,12 +44,28 @@ const PrivateRoutesList: FC<PropTypes> = ({ role, isActivatedProfile }) => {
           }
         />
         <Route
+          path="success"
+          element={<SuccessPage />}
+        />
+        <Route
+          path="error"
+          element={<ErrorPage />}
+        />
+        <Route
           path="products"
           element={<ProductsPage />}
         />
         <Route
           path="products/:id"
           element={<ProductPage />}
+        />
+        <Route
+          path="products/add"
+          element={<AddProductPage />}
+        />
+        <Route
+          path="products/edit"
+          // element={<ProductsPage />}
         />
         <Route
           path="products/categories"

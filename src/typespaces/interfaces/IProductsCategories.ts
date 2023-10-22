@@ -1,3 +1,8 @@
+interface IProductCategory {
+  _id: string;
+  productCategoryName: string;
+}
+
 interface IProductType {
   _id: string;
   parentCategory: string;
@@ -10,4 +15,4 @@ interface IProductSubtype {
   productSubtypeName: string;
 }
 
-export { IProductType, IProductSubtype };
+export { IProductCategory, IProductType, IProductSubtype };
