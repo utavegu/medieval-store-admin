@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react';
 import { FieldError, FieldErrorsImpl, Merge, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { TextField, FormControl, InputLabel, MenuItem, Select, FormHelperText, Button } from '@mui/material';
-import { useAddProductMutation } from '../../api/products-api';
+import {
+  useAddProductMutation,
+  useGetProductsCategoriesQuery,
+  useLazyGetAllProductTypesInCategoryQuery,
+  useLazyGetAllProductSubtypesInTypeQuery,
+} from '../../api/products-api';
 import ImageUploader from '../ImageUploader';
 import { IProductFormInputs } from '../../typespaces/interfaces/IProductFormInputs';
 import { IProductSubtype, IProductType } from '../../typespaces/interfaces/IProductsCategories';
-import { mockCategories, mockSubTypes, mockTypes } from './mock-data'; // TODO: Нормальный запрос категорий сделать
 import styles from './ProductForm.module.css';
 
 /*
@@ -44,10 +48,14 @@ const ProductForm = () => {
     },
   });
 
+  const navigate = useNavigate();
+
   const [addProduct, { isLoading: createProductLoading, isSuccess: createProductSuccess, error: createProductError }] =
     useAddProductMutation();
-
-  const navigate = useNavigate();
+  // TODO: Для всех трёх товарищей ниже лучше предусмотреть и ерроры, и лоадинги и исходя из этого, ну, хотя бы, дизаблить их селекты
+  const { data: categories = [], isLoading: productsCategoriesLoading } = useGetProductsCategoriesQuery();
+  const [getProductTypes] = useLazyGetAllProductTypesInCategoryQuery();
+  const [getProductSubtypes] = useLazyGetAllProductSubtypesInTypeQuery();
 
   const [targetTypes, setTargetTypes] = useState<IProductType[]>([]);
   const [targetSubtypes, setTargetSubtypes] = useState<IProductSubtype[]>([]);
@@ -69,20 +77,24 @@ const ProductForm = () => {
 
   useEffect(() => {
     if (watchCategoryValue) {
-      const types = mockTypes.filter((type) => type.parentCategory === watchCategoryValue);
-      if (types) {
-        setTargetTypes(types);
-        setTargetSubtypes([]);
-      }
+      (async () => {
+        const productTypes = await getProductTypes(watchCategoryValue);
+        if (productTypes.data) {
+          setTargetTypes(productTypes.data);
+          setTargetSubtypes([]);
+        }
+      })();
     }
   }, [watchCategoryValue]);
 
   useEffect(() => {
     if (watchTypeValue) {
-      const subtypes = mockSubTypes.filter((subtype) => subtype.parentType === watchTypeValue);
-      if (subtypes) {
-        setTargetSubtypes(subtypes);
-      }
+      (async () => {
+        const productSubtypes = await getProductSubtypes(watchTypeValue);
+        if (productSubtypes.data) {
+          setTargetSubtypes(productSubtypes.data);
+        }
+      })();
     }
   }, [watchTypeValue]);
 
@@ -239,6 +251,7 @@ const ProductForm = () => {
         margin="normal"
         fullWidth
         error={!!errors?.category}
+        disabled={productsCategoriesLoading}
       >
         <InputLabel id="product-category">Категория товара</InputLabel>
         <Select
@@ -249,7 +262,7 @@ const ProductForm = () => {
             required: 'Нужно выбрать категорию',
           })}
         >
-          {mockCategories.map((category, i) => {
+          {categories.map((category, i) => {
             return (
               <MenuItem
                 key={i}
