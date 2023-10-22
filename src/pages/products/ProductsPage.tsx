@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useGetProductsQuery } from '../api/products-api';
-import ProductsTable from '../components/ProductsTable/ProductsTable';
-import ProductForm from '../components/ProductForm/ProductForm';
+import { Link } from 'react-router-dom';
+import { useGetProductsQuery } from '../../api/products-api';
+import ProductsTable from '../../components/ProductsTable/ProductsTable';
 
 /*
 TODOs:
@@ -19,13 +19,12 @@ const ProductsPage = () => {
 
   return (
     <>
-      {/* TODO: В хроме всегда ошибка загрузки товаров */}
+      {/* TODO: В хроме всегда ошибка загрузки товаров. Вроде поправил? */}
       {fetchProductsError && 'Ошибка загрузки товаров!'}
       {fetchProductsLoading && <div>Идёт загрузка товаров...</div>}
       {!fetchProductsLoading && !fetchProductsError && productsPageMode === 'viewing' && (
         <div>
-          {/* <button type="button">Добавить товар</button> */}
-          <ProductForm />
+          <Link to="add">Добавить товар</Link>
           {products && <ProductsTable products={products} />}
         </div>
       )}

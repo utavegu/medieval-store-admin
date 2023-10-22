@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { FieldError, FieldErrorsImpl, Merge, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { TextField, FormControl, InputLabel, MenuItem, Select, FormHelperText, Button } from '@mui/material';
 import { useAddProductMutation } from '../../api/products-api';
-import { getErrorMessage } from '../../utils/getErrorMessage';
 import ImageUploader from '../ImageUploader';
 import { IProductFormInputs } from '../../typespaces/interfaces/IProductFormInputs';
 import { IProductSubtype, IProductType } from '../../typespaces/interfaces/IProductsCategories';
-import { mockCategories, mockSubTypes, mockTypes } from './mock-data';
+import { mockCategories, mockSubTypes, mockTypes } from './mock-data'; // TODO: Нормальный запрос категорий сделать
 import styles from './ProductForm.module.css';
 
 /*
@@ -16,6 +16,7 @@ TODO:
 Пока в качестве костыля можно так - 3 секунды показывать, что форма успешно отправлена (или ошибку), затем редиректить на список продуктов (кстати у меня это будет смена стейта и надо посмотреть будут ли сохраняться значения полей и прочее при этом)
 Или можно вместе со статусом отправки формы (как ошибки, так и успеха) отображать 2 кнопки - добавить товар, вернуться к таблице товаров
 Если не решу этот вопрос малой кровью, то для редактирования и добавления сделать отдельные страницы: /products/add и products/:id/edit
+- Вообще, по хорошему, тут далеко не всё про форму... (слишком много лишнего в этом компоненте)
 */
 
 const getErrorDescription = (message: string | FieldError | Merge<FieldError, FieldErrorsImpl<any>>) => {
@@ -45,6 +46,8 @@ const ProductForm = () => {
 
   const [addProduct, { isLoading: createProductLoading, isSuccess: createProductSuccess, error: createProductError }] =
     useAddProductMutation();
+
+  const navigate = useNavigate();
 
   const [targetTypes, setTargetTypes] = useState<IProductType[]>([]);
   const [targetSubtypes, setTargetSubtypes] = useState<IProductSubtype[]>([]);
@@ -114,11 +117,11 @@ const ProductForm = () => {
   };
 
   if (createProductError) {
-    return <div>Ошибка: {getErrorMessage(createProductError)}</div>;
+    navigate('/error', { state: { isEdit: false, sourcePage: 'products', error: createProductError } });
   }
 
   if (createProductSuccess) {
-    return <div>Форма успешно отправлена!</div>;
+    navigate('/success', { state: { isEdit: false, sourcePage: 'products' } });
   }
 
   return (

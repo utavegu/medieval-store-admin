@@ -1,18 +1,20 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useGetTargetProductQuery } from '../api/products-api';
-import { getErrorMessage } from '../utils/getErrorMessage';
+import { useGetTargetProductQuery } from '../../api/products-api';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 
 const ProductPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  // TODO: эсинк-эвэйт для data под капотом?
   const { data: product, error, isLoading } = useGetTargetProductQuery(id || '');
+
+  if (isLoading) {
+    return <div>Загрузка данных о товаре...</div>;
+  }
 
   return (
     <>
       <button onClick={() => navigate(-1)}>Назад</button>
-      {error && <div>{getErrorMessage(error)}</div>}
-      {isLoading && <div>Загрузка данных о товаре...</div>}
+      {error && <div>Ошибка: {getErrorMessage(error)}</div>}
       {product && JSON.stringify(product)}
     </>
   );
