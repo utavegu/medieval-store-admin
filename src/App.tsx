@@ -12,7 +12,7 @@ import PrivateRoutesList from './components/Router/PrivateRoutesList';
 import PublicRoutesList from './components/Router/PublicRoutesList';
 
 function App() {
-  useCheckauthQuery();
+  useCheckauthQuery(undefined, { pollingInterval: 60000 }); // время жизни access token
   const user = useAppSelector(authorizedUserSelector);
 
   return (

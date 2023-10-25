@@ -16,7 +16,7 @@ const navigationData: INavigationData[] = [
     path: '/users',
   },
   {
-    title: 'Акции',
+    title: 'Акции и новости',
     path: '/promotions',
   },
   {
