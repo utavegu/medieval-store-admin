@@ -117,6 +117,7 @@ const ImageUploader: FC<PropTypes> = ({
 export default ImageUploader;
 
 /*
+TODO
 Наброски для отправки формы
  const data = new FormData();
 files.forEach((file, i) => {

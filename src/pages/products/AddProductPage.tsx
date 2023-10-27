@@ -1,7 +1,14 @@
+import { useNavigate } from 'react-router-dom';
 import ProductForm from '../../components/ProductForm/ProductForm';
 
 const AddProductPage = () => {
-  return <ProductForm />;
+  const navigate = useNavigate();
+  return (
+    <>
+      <button onClick={() => navigate(-1)}>Назад</button>
+      <ProductForm />
+    </>
+  );
 };
 
 export default AddProductPage;

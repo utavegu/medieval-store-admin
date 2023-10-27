@@ -6,11 +6,13 @@ import { usersAPI } from '../api/users-api';
 import { productsApi } from '../api/products-api';
 import { authApi } from '../api/auth-api';
 import authReducer from './slices/authSlice';
+import { filesApi } from '../api/files-api';
 
 const rootReducer = combineReducers({
   [usersAPI.reducerPath]: usersAPI.reducer,
   [productsApi.reducerPath]: productsApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
+  [filesApi.reducerPath]: filesApi.reducer,
   authReducer,
 });
 
@@ -27,7 +29,7 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: { ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER] },
-    }).concat([usersAPI.middleware, productsApi.middleware, authApi.middleware]),
+    }).concat([usersAPI.middleware, productsApi.middleware, authApi.middleware, filesApi.middleware]),
 });
 
 export const persistor = persistStore(store);
