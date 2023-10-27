@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useEffect, useState } from 'react';
 import { FieldError, FieldErrorsImpl, Merge, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -11,10 +12,15 @@ import {
 import ImageUploader from '../ImageUploader';
 import { IProductFormInputs } from '../../typespaces/interfaces/IProductFormInputs';
 import { IProductSubtype, IProductType } from '../../typespaces/interfaces/IProductsCategories';
+import { IProduct } from '../../typespaces/interfaces/IProduct';
 import styles from './ProductForm.module.css';
 
 /*
 TODO:
+ДЛЯ ФОРМЫ РЕДАКТИРОВАНИЯ:
+1) Решить вопрос с селектами
+2) Превьюшки фотографий показывать сразу и удалять их с бэка при клике на крестик (новый функционал не городи, просто закидывай в стейт фоток эти, но вот при режиме редактирования удалять и на бэке, ты где-то оставлял эту пометку, где это должно быть). Тут вот сложно будет, вероятно придётся менять логику бэка. Потому что аплодер на фронте работает с файлами, а после того как фоты сохранены, отдаёт он уже только их имена - отдавать на фронтенд нужно тоже файлы (для этого на сервере сохранять не ссылку на фото, а файл... но вообще почитай ещё как это по-взрослому делается). Так что эту часть отложи на десерт, пока пунты 1 и 3
+3) Отправка данных на другой эндпоинт
 - Что-то консоль ругается на мой селект с сategory, разберись
 - Решить вопрос со сбросом селектов после отправки формы. В данный момент никак их не сбрасываю, так хотя бы нет ошибок неочевидных... а хотя нет, можно поменять категорию, при этом подкатегория сбросится, но валидацию всё равно пройдёт, так как какое-то значение останется - то же самое, что было и в прошлый раз. Так что, при текущей реализации, как минимум при смене категории надо сбрасывать значение типа. Однако посмотрю ещё как при подключении бэка всё это поменяется.
 Пока в качестве костыля можно так - 3 секунды показывать, что форма успешно отправлена (или ошибку), затем редиректить на список продуктов (кстати у меня это будет смена стейта и надо посмотреть будут ли сохраняться значения полей и прочее при этом)
@@ -27,7 +33,9 @@ const getErrorDescription = (message: string | FieldError | Merge<FieldError, Fi
   return <div className={styles.errorDescription}>{message as React.ReactNode}</div>;
 };
 
-const ProductForm = () => {
+const ProductForm = ({ product }: { product?: IProduct }) => {
+  const isEditMode = !!product;
+
   const {
     register,
     handleSubmit: handleSubmitWrapper,
@@ -37,14 +45,16 @@ const ProductForm = () => {
   } = useForm<IProductFormInputs>({
     mode: 'onSubmit',
     defaultValues: {
-      productName: '',
-      description: '',
-      price: '',
-      discount: '',
-      category: '',
-      type: '',
-      subtype: '',
-      photos: [],
+      productName: isEditMode ? product.productName : '',
+      description: isEditMode ? product.description : '',
+      // @ts-ignore
+      price: isEditMode ? product.price : '',
+      // @ts-ignore
+      discount: isEditMode ? product.discount : '',
+      category: isEditMode ? product.category._id : '',
+      type: isEditMode ? product.type._id : '',
+      subtype: isEditMode ? product.subtype?._id : '',
+      photos: isEditMode ? product.photos : [], // а тут это надо? uploadedFiles... Но вроде да.
     },
   });
 
@@ -61,6 +71,7 @@ const ProductForm = () => {
   const [targetSubtypes, setTargetSubtypes] = useState<IProductSubtype[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
+  /*
   useEffect(() => {
     // Сбрасывай лучше сам, пожалуй и только на код 201 с сервера. А то этот сброс на категории как-то странно работает.
     // А ещё, не смотря на баловство с зависимостями, ты всё равно срабатываешь когда не надо (при первой отрисовке формы, что будет критично при редактировании), так что, пожалуй, откажусь от тебя.
@@ -71,6 +82,7 @@ const ProductForm = () => {
       discount: '',
     });
   }, [isSubmitSuccessful, reset]);
+  */
 
   const watchCategoryValue = watch('category');
   const watchTypeValue = watch('type');
@@ -138,6 +150,7 @@ const ProductForm = () => {
 
   return (
     <form onSubmit={handleSubmitWrapper(handleSubmit)}>
+      {isEditMode ? 'Режим редактирования' : 'Режим добавления'}
       {/* TODO: Вообще margin=normal не достаточно, чтобы интерфейс не дёргался при появлении дескрипшина ошибок. Но можно уменьшить шрифт в них или сделать их абсолютами */}
       <FormControl
         margin="normal"

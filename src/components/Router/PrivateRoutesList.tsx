@@ -8,6 +8,7 @@ import ProductsPage from '../../pages/products/ProductsPage';
 import ProductPage from '../../pages/products/ProductPage';
 import AddProductPage from '../../pages/products/AddProductPage';
 import { IUser } from '../../typespaces/interfaces/IUser';
+import EditProductPage from '../../pages/products/EditProductPage';
 
 interface PropTypes {
   role: IUser['role'];
@@ -64,8 +65,8 @@ const PrivateRoutesList: FC<PropTypes> = ({ role, isActivatedProfile }) => {
           element={<AddProductPage />}
         />
         <Route
-          path="products/edit"
-          // element={<ProductsPage />}
+          path="products/:id/edit"
+          element={<EditProductPage />}
         />
         <Route
           path="products/categories"

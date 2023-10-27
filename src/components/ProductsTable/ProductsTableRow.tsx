@@ -31,9 +31,11 @@ const ProductsTableRow = ({
             <span className="visually-hidden">Смотреть товар</span>
           </button>
         </Link>
-        <button title="Редактировать товар">
-          <span className="visually-hidden">Редактировать товар</span>
-        </button>
+        <Link to={`/products/${_id}/edit`}>
+          <button title="Редактировать товар">
+            <span className="visually-hidden">Редактировать товар</span>
+          </button>
+        </Link>
         <button
           className={styles.buttonRemove}
           title="Удалить товар"
